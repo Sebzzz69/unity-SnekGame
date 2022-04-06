@@ -7,10 +7,13 @@ public class Snake : MonoBehaviour
 {
     private Vector2 direction = Vector2.right;
     private List<Transform> _segments = new List<Transform>();
+    private int score = 0;
 
     public Transform segmentPrefab;
     public int initialSize = 3;
-    public Text score;
+    public Text scoreText;
+    public AudioSource AudioSource;
+    public AudioClip ScoreSound, DeathSound;
 
     private void Start()
     {
@@ -93,6 +96,8 @@ public class Snake : MonoBehaviour
             _segments.Add(Instantiate(this.segmentPrefab));
         }
 
+        score = 0;
+        scoreText.text = score.ToString();
 
         this.transform.position = Vector3.zero;
 
@@ -103,10 +108,15 @@ public class Snake : MonoBehaviour
         if (other.gameObject.CompareTag("Food"))
         {
             Grow();
+            score++;
+            scoreText.text = score.ToString();
+
+            AudioSource.PlayOneShot(ScoreSound);
+            
         } else if (other.gameObject.CompareTag("Obstacle"))
         {
             ResetState();
-            
+            AudioSource.PlayOneShot(DeathSound);
         }
 
     }
